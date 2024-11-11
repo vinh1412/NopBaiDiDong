@@ -28,7 +28,7 @@ export default function Screen01({navigation}) {
         <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Screen02')}>
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonADD}>
+        <TouchableOpacity style={styles.buttonADD} onPress={()=>navigation.navigate('Screen03')}>
           <Text style={styles.buttonText}>ADD</Text>
         </TouchableOpacity>
       </View>
