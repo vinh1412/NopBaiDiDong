@@ -1,23 +1,16 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-
-const bikes = [
-  { id: '1', name: 'Pinarello', price: 1800, image: "https://i.ibb.co/4Vs6qvg/bifour-removebg-preview-1.png" },
-  { id: '2', name: 'Pina Mountai', price: 1700, image: "https://i.ibb.co/Cwc2nXb/bione-removebg-preview-2.png" },
-  { id: '3', name: 'Pina Bike', price: 1500, image: "https://i.ibb.co/6vW2fP9/bitwo-removebg-preview.png" },
-  { id: '4', name: 'Pinarello', price: 1900, image: "https://i.ibb.co/Y70JVnn/bione-removebg-preview-4.png" },
-  { id: '5', name: 'Pinarello', price: 2700, image:"https://i.ibb.co/Y70JVnn/bione-removebg-preview-4.png" },
-  { id: '6', name: 'Pinarello', price: 1350, image: "https://i.ibb.co/f0mGttN/bithree-removebg-preview-1.png" },
-];
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchBikes } from '../redux/features/bikesSlice';
 
 export default function App() {
-  const renderBike = ({ item }) => (
-    <View style={styles.bikeCard}>
-      <Image source={{ uri: item.image }} style={styles.bikeImage} />
-      <Text style={styles.bikeName}>{item.name}</Text>
-      <Text style={styles.bikePrice}>${item.price}</Text>
-    </View>
-  );
+  const dispatch = useDispatch();
+  const bikes = useSelector((state) => state.bikes.items);
+  const status = useSelector((state) => state.bikes.status);
+
+  useEffect(() => {
+    dispatch(fetchBikes());
+  }, [dispatch]);
 
   return (
     <View style={styles.container}>
@@ -33,13 +26,24 @@ export default function App() {
           <Text style={styles.filterText}>Mountain</Text>
         </TouchableOpacity>
       </View>
-      <FlatList
-        data={bikes}
-        renderItem={renderBike}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-      />
+
+      {status === 'loading' ? (
+        <ActivityIndicator size="large" color="#FF4D4D" />
+      ) : (
+        <FlatList
+          data={bikes}
+          keyExtractor={(item) => item.id.toString()}
+          numColumns={2}
+          contentContainerStyle={styles.listContainer}
+          renderItem={({ item }) => (
+            <View style={styles.bikeCard}>
+              <Image source={{ uri: item.img }} style={styles.bikeImage} />
+              <Text style={styles.bikeName}>{item.name}</Text>
+              <Text style={styles.bikePrice}>${item.price}</Text>
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 }
