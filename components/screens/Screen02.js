@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBikes } from '../redux/features/bikesSlice';
@@ -7,23 +7,39 @@ export default function App() {
   const dispatch = useDispatch();
   const bikes = useSelector((state) => state.bikes.items);
   const status = useSelector((state) => state.bikes.status);
+  const [filter, setFilter] = useState('All'); // State để lưu category hiện tại
 
   useEffect(() => {
     dispatch(fetchBikes());
   }, [dispatch]);
 
+  // Lọc danh sách xe đạp dựa trên category hiện tại
+  const filteredBikes = bikes.filter((bike) => {
+    if (filter === 'All') return true;
+    return bike.category === filter;
+  });
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>The world's Best Bike</Text>
       <View style={styles.filterContainer}>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>All</Text>
+        <TouchableOpacity
+          style={[styles.filterButton, filter === 'All' && styles.activeFilterButton]}
+          onPress={() => setFilter('All')}
+        >
+          <Text style={[styles.filterText, filter === 'All' && styles.activeFilterText]}>All</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>Roadbike</Text>
+        <TouchableOpacity
+          style={[styles.filterButton, filter === 'Roadbike' && styles.activeFilterButton]}
+          onPress={() => setFilter('Roadbike')}
+        >
+          <Text style={[styles.filterText, filter === 'Roadbike' && styles.activeFilterText]}>Roadbike</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.filterButton}>
-          <Text style={styles.filterText}>Mountain</Text>
+        <TouchableOpacity
+          style={[styles.filterButton, filter === 'Mountain' && styles.activeFilterButton]}
+          onPress={() => setFilter('Mountain')}
+        >
+          <Text style={[styles.filterText, filter === 'Mountain' && styles.activeFilterText]}>Mountain</Text>
         </TouchableOpacity>
       </View>
 
@@ -31,7 +47,7 @@ export default function App() {
         <ActivityIndicator size="large" color="#FF4D4D" />
       ) : (
         <FlatList
-          data={bikes}
+          data={filteredBikes}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           contentContainerStyle={styles.listContainer}
@@ -74,9 +90,15 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
   },
+  activeFilterButton: {
+    backgroundColor: '#FF4D4D', // Màu khi button được chọn
+  },
   filterText: {
     color: '#FF4D4D',
     fontWeight: 'bold',
+  },
+  activeFilterText: {
+    color: '#FFF', // Màu chữ khi button được chọn
   },
   listContainer: {
     paddingBottom: 16,
