@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 
-export default function Screen01() {
+export default function Screen01({navigation}) {
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -25,7 +25,7 @@ export default function Screen01() {
           />
         </View>
         <Text style={styles.title}>POWER BIKE SHOP</Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Screen02')}>
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.buttonADD}>
