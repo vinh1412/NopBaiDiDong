@@ -10,7 +10,7 @@ import {
 import { useDispatch } from "react-redux";
 import { addBike } from "../redux/features/bikesSlice";
 
-export default function AddBikeScreen() {
+export default function AddBikeScreen({navigation}) {
   const [bikeName, setBikeName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
@@ -35,6 +35,7 @@ export default function AddBikeScreen() {
         setPrice("");
         setCategory("");
         setImg("");
+        navigation.navigate('Screen02');
       })
       .catch((error) => {
         Alert.alert("Failed to add bike", error.message);
